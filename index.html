@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta htto-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'">
+    <title>Serial Updater</title>
+</head>
+<link rel="shortcut icon" href="static/logo.png">
+<link rel="stylesheet" href="static/element-ui.css">
+<link rel="stylesheet" href="static/index.css">
+<script src="static/vue2.js"></script>
+<script src="static/element-ui.js"></script>
+<script src="static/index.js"></script>
+
+<body>
+    <div id="app">
+        <div class="box-card">
+            <el-divider content-position="left">Serial Config</el-divider>
+            <div class="serial_box">
+                <span class="form_label">SerialPort：</span>
+                <el-button size="small" @Click="openPort" v-if="!isPortOpen" :disabled="isSending">Connect</el-button>
+                <el-button size="small" @Click="closePort" v-if="isPortOpen" :disabled="isSending"
+                    type="danger">Disconnect</el-button>
+            </div>
+        </div>
+        <div class="box-card">
+            <el-divider content-position="left">File Config</el-divider>
+            <div class="file_box">
+                <div class="file_inner_box">
+                    <div>
+                        <span class="form_label">FileName：</span>
+                        <el-input size="small" class="file_path pad-r-10 " placeholder="please select file"
+                            v-model="fileName" readonly></el-input>
+                    </div>
+                    <input type="file" id="fileInput" accept=".bin" @change="selectFile" style="display: none;">
+                    <el-button size="small" @Click="document.getElementById('fileInput').click()"
+                        :disabled="isSending">Select</el-button>
+                    <el-button size="small" @Click="startFileSend" v-show="!isSending">Send</el-button>
+                    <el-button size="small" type="danger" @Click="stopFileSend" v-show="isSending">Stop</el-button>
+                </div>
+                <div class="file_inner_box">
+                    <span class="form_label">Progress：</span>
+                    <el-progress :text-inside="true" status="success" :stroke-width="24"
+                        :percentage="this.fileSendProgress" class="progress_bar" width="400"></el-progress>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

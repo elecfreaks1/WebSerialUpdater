@@ -1,0 +1,85 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+#app {
+    padding: 10px 20px;
+    width: 480px;
+    height: 290px;
+    position: absolute;
+    top: 50%;
+    margin-top: -210px;
+    left: 50%;
+    margin-left: -240px;
+    border: solid 1px #f0f0f0;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+}
+.box-card {
+    padding-top: 1px;
+}
+.box-card .el-divider__text {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.box-card .el-divider {
+    background-color: #bcbcbc;
+}
+
+.serial_box {
+    padding: 0 15px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.form_label {
+    width: 78px;
+    text-align: right;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.uart_select {
+    width: 220px;
+}
+
+.file_box {
+    display: block;
+    padding: 0 15px;
+    height: 120px;
+}
+
+.file_inner_box {
+    height: 58px;
+    display: flex;
+    align-items: center;
+}
+
+.file_path {
+    width: 220px;
+}
+
+.progress_bar {
+    width: 365px;
+}
+
+.progress_bar .el-progress-bar__outer {
+    border-radius: 3px !important;
+    background-color: #f0f0f0 !important;
+    border: solid 1px #bcbcbc !important;
+}
+
+.progress_bar .el-progress-bar__inner {
+    border-radius: 3px !important;
+}
+
+.pad-r-10 {
+    padding-right: 10px;
+}
