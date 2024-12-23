@@ -31,6 +31,11 @@ window.onload = function () {
         methods: {
             async selectFile(event) {
                 let file = document.getElementById('fileInput').files[0];
+                if (!file) {
+                    this.fileName = null;
+                    this.fileBuffer = null;
+                    return;
+                }
                 let reader = new FileReader();
                 reader.onload = async (e) => {
                     this.fileName = file ? file.name : "";
