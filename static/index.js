@@ -57,6 +57,7 @@ window.onload = function () {
                         this.isPortOpen = false;
                         this.port.close()
                         this.port = null
+                        this.stopFileSend();
                     }
                     this.isPortOpen = true;
                 } catch (err) {
