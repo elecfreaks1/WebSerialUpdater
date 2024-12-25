@@ -19,9 +19,18 @@ body {
     background-color: white;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
 }
+
+
+.line_box {
+    height: 65px;
+    display: flex;
+    align-items: center;
+}
+
 .box-card {
     padding-top: 1px;
 }
+
 .box-card .el-divider__text {
     font-size: 16px;
     font-weight: 600;
@@ -39,15 +48,12 @@ body {
 }
 
 .form_label {
-    width: 78px;
+    min-width: 73px;
+    padding-right: 5px;
     text-align: right;
     display: inline-block;
     font-size: 14px;
     font-weight: 400;
-}
-
-.uart_select {
-    width: 220px;
 }
 
 .file_box {
@@ -56,14 +62,8 @@ body {
     height: 120px;
 }
 
-.file_inner_box {
-    height: 58px;
-    display: flex;
-    align-items: center;
-}
-
 .file_path {
-    width: 220px;
+    width: 215px;
 }
 
 .progress_bar {

@@ -6,7 +6,7 @@ window.onload = function () {
             port: null,
             writer: null,
             reader: null,
-            fileName: "",
+            firmware: [],
             isPortOpen: false,
             isSending: false,
             fileBuffer: null,
@@ -15,6 +15,20 @@ window.onload = function () {
             fileSendProgress: 0,
             fileSendStatus: 0,// 0:未开始 1:正在发送
             fileSendTask: null,
+            fileOptions: [
+                {
+                    value: "NezhaPro",
+                    label: "NezhaPro",
+                    children: [
+                        {
+                            value: "Nezha_Pro_v1.0.2.bin",
+                            label: "v1.0.2"
+                        },
+                    ]
+                }
+            ],
+            uploadBuffer: null,
+            repeatUpdateFlag: false
         },
         mounted() {
             const handshakeData = new Uint8Array([0xEF]);
@@ -29,19 +43,51 @@ window.onload = function () {
             }, 5)
         },
         methods: {
-            async selectFile(event) {
+            async selectFile() {
                 let file = document.getElementById('fileInput').files[0];
                 if (!file) {
-                    this.fileName = null;
-                    this.fileBuffer = null;
                     return;
                 }
                 let reader = new FileReader();
                 reader.onload = async (e) => {
-                    this.fileName = file ? file.name : "";
-                    this.fileBuffer = new Uint8Array(e.target.result);
+                    let lastOptionIndex = this.fileOptions.length - 1
+                    if (this.fileOptions[lastOptionIndex].value == 'File') {
+                        this.fileOptions.splice(lastOptionIndex, 1);
+                    }
+                    this.fileOptions.push({
+                        value: "File",
+                        label: "File",
+                        children: [
+                            {
+                                value: file.name,
+                                label: file.name
+                            }
+                        ]
+                    })
+                    this.firmware = ['File', file.name];
+                    this.uploadBuffer = new Uint8Array(e.target.result);
+                    this.fileBuffer = this.uploadBuffer;
+                    console.log('Downloaded and parsed byte array:', this.fileBuffe);
+                    console.log(new DataView(this.fileBuffer.buffer).getUint32(0, false)); // 查看前4个字节作为无符号整数
                 };
                 reader.readAsArrayBuffer(file);
+            },
+            async firmwareChange() {
+                if (this.firmware[0] == 'File') {
+                    this.fileBuffer = this.uploadBuffer;
+                } else {
+                    let url = `firmware/${this.firmware[1]}`;
+                    // 发送HTTP请求以下载文件
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        await app.$alert('Firmware download failed!');
+                        this.firmware = []
+                        return;
+                    }
+                    this.fileBuffer = new Uint8Array(await response.arrayBuffer());
+                    console.log('Downloaded and parsed byte array:', this.fileBuffe);
+                    console.log(new DataView(this.fileBuffer.buffer).getUint32(0, false)); // 查看前4个字节作为无符号整数
+                }
             },
             async openPort() {
                 try {
@@ -60,9 +106,13 @@ window.onload = function () {
                     this.port.ondisconnect = () => {
                         this.$message.error('Serial device disconnected!');
                         this.isPortOpen = false;
-                        this.port.close()
-                        this.port = null
-                        this.stopFileSend();
+                        try {
+                            this.stopFileSend();
+                            this.port.close()
+                        } finally {
+                            this.port = null
+                        }
+
                     }
                     this.isPortOpen = true;
                 } catch (err) {
@@ -75,23 +125,25 @@ window.onload = function () {
             async closePort() {
                 try {
                     await this.writer.releaseLock()
-                } catch (err) { }
+                } finally { }
                 try {
                     await this.reader.releaseLock()
-                } catch (err) { }
+                } finally { }
                 try {
                     await this.port.close();
-                } catch (err) { }
+                } finally { }
                 this.isPortOpen = false;
                 this.port = null
             },
             async startFileSend() {
+
                 if (this.isPortOpen == false) {
                     this.$message.warning('Port not conneted!');
                     return;
                 }
-                if (this.fileName == "" || this.fileName == undefined) {
-                    this.$message.warning('Program file not selected!');
+
+                if (this.firmware[0] == null || this.firmware[0] == undefined) {
+                    this.$message.warning('Program firmware not selected!');
                     return;
                 }
 
@@ -103,7 +155,6 @@ window.onload = function () {
 
             },
             async stopFileSend() {
-                // await window.electronApi.stopFileSend();
                 this.fileSendStatus = 0;
                 this.isSending = false;
                 this.fileSendProgress = 0;
@@ -160,11 +211,20 @@ window.onload = function () {
                             case 4:
                                 if (data == 0xAA) {
                                     this.fileSendProgress = 100;
-                                    await app.$alert('File Send Success!');
-                                    this.isSending = false;
-                                    this.stopFlag = false;
-                                    this.fileSendProgress = 0;
-                                    return;
+                                    if (this.repeatUpdateFlag) {
+                                        this.fileSendProgress = 0;
+                                        this.isSending = true;
+                                        this.fileSendIndex = 0;
+                                        this.fileSendStatus = 1;
+                                        this.fileCheckSum = 0;
+                                    } else {
+                                        await app.$alert('Firmware Update Success!');
+                                        this.isSending = false;
+                                        this.stopFlag = false;
+                                        this.fileSendProgress = 0;
+                                        this.fileSendStatus = 0;
+                                        return;
+                                    }
                                 }
                         }
                     }
