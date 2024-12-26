@@ -27,7 +27,7 @@
             </div>
             <div class="line_box">
                 <span class="form_label">Firmware:</span>
-                <el-cascader size="small" class="file_path pad-r-10" placeholder="Please select file"
+                <el-cascader size="small" class="file_path pad-r-10" placeholder="Please select firmware"
                     :options="fileOptions" v-model="firmware" @change="firmwareChange" :disabled="isSending">
                 </el-cascader>
                 <input type="file" id="fileInput" accept=".bin" @change="selectFile" style="display: none;">

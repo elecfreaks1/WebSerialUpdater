@@ -67,8 +67,6 @@ window.onload = function () {
                     this.firmware = ['File', file.name];
                     this.uploadBuffer = new Uint8Array(e.target.result);
                     this.fileBuffer = this.uploadBuffer;
-                    console.log('Downloaded and parsed byte array:', this.fileBuffe);
-                    console.log(new DataView(this.fileBuffer.buffer).getUint32(0, false)); // 查看前4个字节作为无符号整数
                 };
                 reader.readAsArrayBuffer(file);
             },
@@ -85,8 +83,6 @@ window.onload = function () {
                         return;
                     }
                     this.fileBuffer = new Uint8Array(await response.arrayBuffer());
-                    console.log('Downloaded and parsed byte array:', this.fileBuffe);
-                    console.log(new DataView(this.fileBuffer.buffer).getUint32(0, false)); // 查看前4个字节作为无符号整数
                 }
             },
             async openPort() {
