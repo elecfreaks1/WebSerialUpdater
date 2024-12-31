@@ -25,7 +25,27 @@ window.onload = function () {
                             label: "v1.0.2"
                         },
                     ]
-                }
+                },
+                {
+                    value: "CutebotPro",
+                    label: "CutebotPro",
+                    children: [
+                        {
+                            value: "Cutebot_Pro_v2.0.1.bin",
+                            label: "v2.0.1"
+                        },
+                    ]
+                },
+                {
+                    value: "TPbotPro",
+                    label: "TPbotPro",
+                    children: [
+                        {
+                            value: "TPbot_Pro_v2.0.1.bin",
+                            label: "v2.0.1"
+                        },
+                    ]
+                },
             ],
             uploadBuffer: null,
             repeatUpdateFlag: false
